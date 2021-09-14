@@ -40,14 +40,6 @@ km(140).
 km(190).
 km(210).
 
-% indica se um ano é anterior a outro
-anoAntes(ano(X1), ano(X2)):- 
-    X1 < X2.
-
-% indica se um ano é posterior a outro 
-anoDepois(X,Y) :-
-    anoAntes(Y, X).
-
 %X está à ao lado de Y
 aoLado(X,Y,Lista) :- nextto(X,Y,Lista);nextto(Y,X,Lista).
 
@@ -76,97 +68,72 @@ todosDiferentes([H|T]) :- not(member(H,T)), todosDiferentes(T).
 %solução
 solucao(ListaSolucao):-
     ListaSolucao = [
-        carro(cor1,ano1,montadora1,dono1,placa1,km1),
-        carro(cor2,ano2,montadora2,dono2,placa2,km2),
-        carro(cor3,ano3,montadora3,dono3,placa3,km3),
-        carro(cor4,ano4,montadora4,dono4,placa4,km4),
-        carro(cor5,ano5,montadora5,dono5,placa5,km5)
+        carro(Cor1,Ano1,Montadora1,Dono1,Placa1,Km1),
+        carro(Cor2,Ano2,Montadora2,Dono2,Placa2,Km2),
+        carro(Cor3,Ano3,Montadora3,Dono3,Placa3,Km3),
+        carro(Cor4,Ano4,Montadora4,Dono4,Placa4,Km4),
+        carro(Cor5,Ano5,Montadora5,Dono5,Placa5,Km5)
     ],
-
-    (
     % Ponce é o dono do carro da placa EEE-5555.
-    member(carro(_,_,_,Ponce,placa(eee555),_), ListaSolucao)
-    ),
-    (
+    member(carro(_,_,_,ponce,eee5555,_), ListaSolucao),
+
     % Glenn está exatamente à direita do carro de 140.000 Km.
-    aDireita(member(carro(_,_,_,_,_,140)),member(carro(_,_,_,Gleen,_,_)),ListaSolucao)
-    ),
-    (
+    exatamenteDireita(carro(_,_,_,glenn,_,_),carro(_,_,_,_,_,140),ListaSolucao),
+    
     % O carro da placa CCC-3333 está em algum lugar entre o carro Branco e o carro da placa DDD-4444, nessa ordem.
-    aoLado(member(carro(branco,_,_,_,_,_)),member(carro(_,_,_,_,placa(ccc333),_)),ListaSolucao),
-    aoLado(member(carro(_,_,_,_,placa(ccc333),_)),member(carro(_,_,_,_,placa(ddd4444),_)),ListaSolucao)
-    ),
-    (
+    aDireita(carro(_,_,_,_,ccc3333,_),carro(branco,_,_,_,_,_),ListaSolucao),
+    aEsquerda(carro(_,_,_,_,ccc3333,_),carro(_,_,_,_,ddd4444,_),ListaSolucao),
+    
     % O veículo de 1960 tem 140.000 Km.
-    member(carro(_,1960,_,_,_,140),ListaSolucao)
-    ),
-    (
+    member(carro(_,1960,_,_,_,140),ListaSolucao),
+    
     % Harley está em uma das pontas.
-    noCanto(ListaSolucao,member(carro(_,_,_,Harley,_,_)))
-    ),
-    (
+    noCanto(carro(_,_,_,harley,_,_),ListaSolucao),
+    
     % O carro Branco está em algum lugar entre o carro da Ford e o carro mais novo, nessa ordem.
-    aEsquerda(member(carro(_,X2,ford,_,_,_)),member(carro(branco,X3,_,_,_,_)),ListaSolucao),
-    aDireita(member(carro(branco,X3,_,_,_,_)),member(carro(_,X1,_,_,_,_)),ListaSolucao),
-        anoDepois(X1,X2),
-        anoDepois(X1,X3)
-    ),
-    (
+    aEsquerda(carro(branco,_,_,_,_,_),carro(_,_,ford,_,_,_),ListaSolucao),
+    aDireita(carro(branco,_,_,_,_,_),carro(_,1970,_,_,_,_),ListaSolucao),
+
     %O veículo de placa AAA-1111 está exatamente à esquerda do carro de 1955.
-    exatamenteEsquerda( member(carro(_,_,_,_,placa(aaa1111))), member( carro(_,1955,_,_,_,_)),ListaSolucao)
-    ),
-    (
+    exatamenteEsquerda(carro(_,_,_,_,aaa1111),carro(_,1955,_,_,_,_),ListaSolucao),
+    
     % O veículo Amarelo está em algum lugar à esquerda do carro de 140.000 Km
-    aEsquerda( member(carro(amarelo,_,_,_,_,_)),member(carro(_,_,_,_,_,140)),ListaSolucao)
-    ),
-    (
+    aEsquerda(carro(amarelo,_,_,_,_,_),carro(_,_,_,_,_,140),ListaSolucao),
+    
     % Na terceira posição está o carro da cor Verde.
-    cor3 = verde
-    ),
-    (
+    Cor3 = verde,
+    
     % O carro de 1955 está exatamente à esquerda do carro de placa BBB-2222.
-    exatamenteEsquerda(member(carro(_,1955,_,_,_,_)),member(carro(_,_,_,_,placa(bbb222),_)),ListaSolucao)
-    ),
-    (
+    exatamenteEsquerda(carro(_,1955,_,_,_,_),carro(_,_,_,_,bbb2222,_),ListaSolucao),
+    
     % O carro da Volkswagen está em algum lugar à direita do carro Vermelho.
-    aDireita(member(carro(vermelho,_,_,_,_,_)),member(carro(_,_,volkswagen,_,_,_)),ListaSolucao)  
-    ),
-    (
+    aDireita(carro(_,_,volkswagen,_,_,_),carro(vermelho,_,_,_,_,_),ListaSolucao),
+    
     % O veículo da Chevrolet está ao lado do veículo de 140.000 Km.
-    aoLado(member(carro(_,_,chevrolet,_,_,_)),member(carro(_,_,_,_,_,140)),ListaSolucao)
-    ),
-    (
+    aoLado(carro(_,_,chevrolet,_,_,_),carro(_,_,_,_,_,140),ListaSolucao),
+    
     % Em uma das pontas está o carro mais rodado.
-    noCanto(member(carro(_,_,_,_,_,km3)),ListaSolucao),
-        km3 > km1;
-        km1 > km2;
-        km2 > km4;
-        km4 > km5
-    ),
-    (
+    noCanto(carro(_,_,_,_,_,210),ListaSolucao),
+    
     % O carro Branco está em algum lugar entre o carro de 190.000 Km e o veículo da Porsche, nessa ordem.
-        aoLado( member(carro(_,_,_,_,_,190)),member(carro(branco,_,_,_,_,_)),ListaSolucao),
-        aoLado(member(carro(branco,_,_,_,_,_)),member(carro(_,_,porsche,_,_,_)),ListaSolucao)
-    ),
-    (
+    aEsquerda(carro(branco,_,_,_,_,_),carro(_,_,_,_,_,190),ListaSolucao),
+    aDireita(carro(branco,_,_,_,_,_),carro(_,_,porsche,_,_,_),ListaSolucao),
+    
     % O veículo de placa AAA-1111 está exatamente à esquerda do carro da Mercedes.
-        exatamenteEsquerda(member(carro(_,_,_,_,aaa1111,_)),member(carro(_,_,mercedes,_,_,_)),ListaSolucao)
-    ),
-    (
+    exatamenteEsquerda(carro(_,_,_,_,aaa1111,_),carro(_,_,mercedes,_,_,_),ListaSolucao),
+    
     % O carro Branco está em algum lugar à esquerda do veículo de 100.000 Km.
-        aEsquerda(member(carro(branco,_,_,_,_,_)),member(carro(_,_,_,_,_,100)),ListaSolucao)
-    ),
-    (
+    aEsquerda(carro(branco,_,_,_,_,_),carro(_,_,_,_,_,100),ListaSolucao),
+    
     % O carro de 140.000 Km está em algum lugar à direita do carro Branco.
-        aDireita(member(carro(branco,_,_,_,_,_)),member(carro(_,_,_,_,_,140)),ListaSolucao)
-    ),
-    (
+    aDireita(carro(_,_,_,_,_,140),carro(branco,_,_,_,_,_),ListaSolucao),
+    
     %  Thales está em algum lugar entre o carro de 1970 e o Glenn, nessa ordem.
-        aDireita(member(carro(_,1970,_,_,_,_)),member(carro(_,_,_,Thales,_,_)),ListaSolucao),
-        aEsquerda(member(carro(_,_,_,Thales,_,_)), member(carro(_,_,_,Gleen,_,_)),ListaSolucao)
-    ),
+    aEsquerda(carro(_,_,_,thales,_,_),carro(_,1970,_,_,_,_),ListaSolucao),
+    aDireita(carro(_,_,_,thales,_,_),carro(_,_,_,glenn,_,_),ListaSolucao),
+    
     % O veículo da Chevrolet está em algum lugar à direita do carro de 1965.
-    aDireita(member(carro(_,1965,_,_,_,_)),member(carro(_,_,chevrolet,_,_,_)),ListaSolucao),
+    aDireita(carro(_,_,chevrolet,_,_,_),carro(_,1965,_,_,_,_),ListaSolucao),
 
     %Testando todas as possibilidades
     cor(Cor1),cor(Cor2),cor(Cor3),cor(Cor4),cor(Cor5),
