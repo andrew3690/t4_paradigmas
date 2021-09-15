@@ -40,27 +40,27 @@ km(140).
 km(190).
 km(210).
 
-%X está à ao lado de Y
-aoLado(X,Y,Lista) :- nextto(X,Y,Lista);nextto(Y,X,Lista).
+% X está entre Y e Z (em qualquer posição no meio)
+entre(X,Y,Z,Lista) :- aEsquerda(X,Z,Lista), aDireita(X,Y,Lista).
 
-%X está à esquerda de Y (em qualquer posição à esquerda)
-aEsquerda(X,Y,Lista) :- nth0(IndexX,Lista,X), 
-                    nth0(IndexY,Lista,Y), 
-                    IndexX < IndexY.
-                            
-%X está à direita de Y (em qualquer posição à direita)
+% X está à esquerda de Y (em qualquer posição à esquerda)
+aEsquerda(X,Y,Lista) :- nth0(IndexX,Lista,X),
+                        nth0(IndexY,Lista,Y),
+                        IndexX < IndexY.
+
+% X está à direita de Y (em qualquer posição à direita)
 aDireita(X,Y,Lista) :- aEsquerda(Y,X,Lista).
 
-%X está no canto se ele é o primeiro ou o último da lista
+% X está à ao lado de Y
+aoLado(X,Y,Lista) :- nextto(X,Y,Lista);nextto(Y,X,Lista).
+
+% X está no canto se ele é o primeiro ou o último da lista
 noCanto(X,Lista) :- last(Lista,X).
 noCanto(X,[X|_]).
 
 % Verifica se todos os elementos da lista sao diferentes
 todosDiferentes([]).
 todosDiferentes([H|T]) :- not(member(H,T)), todosDiferentes(T).  
-
-% X está entre Y e Z (em qualquer posição no meio)
-entre(X,Y,Z,Lista) :- aEsquerda(X,Z,Lista), aDireita(X,Y,Lista).
 
 %solução
 solucao(ListaSolucao):-
@@ -83,14 +83,14 @@ solucao(ListaSolucao):-
     member(carro(_,1960,_,_,_,140),ListaSolucao),
 
     % Harley está em uma das pontas.
-    noCanto(carro(_,_,_,harley,_,_),ListaSolucao),
+    %noCanto(carro(_,_,_,harley,_,_),ListaSolucao),
     
     % O carro Branco está em algum lugar entre o carro da Ford e o carro mais novo, nessa ordem.
     entre(carro(branco,_,_,_,_,_),carro(_,_,ford,_,_,_),carro(_,1970,_,_,_,_),ListaSolucao),
     
     %O veículo de placa AAA-1111 está exatamente à esquerda do carro de 1955.
-    aoLado(carro(_,_,_,_,aaa1111),carro(_,1955,_,_,_,_),ListaSolucao),
-    aEsquerda(carro(_,_,_,_,aaa1111),carro(_,1955,_,_,_,_),ListaSolucao),
+    aoLado(carro(_,_,_,_,aaa1111,_),carro(_,1955,_,_,_,_),ListaSolucao),
+    aEsquerda(carro(_,_,_,_,aaa1111,_),carro(_,1955,_,_,_,_),ListaSolucao),
 
     % O veículo Amarelo está em algum lugar à esquerda do carro de 140.000 Km
     aEsquerda(carro(amarelo,_,_,_,_,_),carro(_,_,_,_,_,140),ListaSolucao),
@@ -152,3 +152,4 @@ solucao(ListaSolucao):-
 
     km(Km1),km(Km2),km(Km3),km(Km4),km(Km5),
     todosDiferentes([Km1,Km2,Km3,Km4,Km5]).
+%   Lista = [carro(amarelo, 1965, ford, aguiar, aaa1111, 190), carro(branco, 1955, mercedes, ponce, eee5555, 80), carro(verde, 1970, chevrolet, harley, bbb2222, 100), carro(vermelho, 1960, porsche, thales, ccc3333, 140), carro(azul, 1950, volkswagen, glenn, ddd4444, 210)] 
